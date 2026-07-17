@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Madness Exploratory Design Prompt Generator</title>
+  <style>
+    :root {
+      --yellow: #ffd400;
+      --black: #050505;
+      --white: #ffffff;
+      --soft-black: #141414;
+      --gray: #f4f4f4;
+      --line: rgba(255,255,255,0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top left, rgba(255,212,0,0.22), transparent 34%), var(--black);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .page {
+      width: min(1180px, 94%);
+      margin: 0 auto;
+      padding: 34px 0 60px;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(255,212,0,0.18), rgba(255,255,255,0.05));
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      margin-bottom: 24px;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--yellow);
+      color: var(--black);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.95;
+      margin: 18px 0 10px;
+      letter-spacing: -0.06em;
+    }
+
+    .hero p {
+      max-width: 780px;
+      color: rgba(255,255,255,0.76);
+      font-size: 17px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .tag {
+      color: var(--black);
+      background: var(--yellow);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 800;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.09);
+      color: var(--white);
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea { min-height: 95px; resize: vertical; }
+
+    input:focus, textarea:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 4px rgba(255,212,0,0.13);
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 640px) {
+      .preset-grid { grid-template-columns: 1fr; }
+    }
+
+    .preset-card {
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .preset-card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: var(--yellow);
+      letter-spacing: 0.01em;
+    }
+
+    .checks {
+      display: grid;
+      gap: 8px;
+      max-height: 195px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .check-row {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      color: rgba(255,255,255,0.86);
+      font-size: 13px;
+      line-height: 1.28;
+      cursor: pointer;
+    }
+
+    .check-row input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--yellow);
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 15px;
+      padding: 13px 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); opacity: 0.8; }
+
+    .primary { background: var(--yellow); color: var(--black); }
+    .secondary { background: var(--white); color: var(--black); }
+    .ghost { background: rgba(255,255,255,0.12); color: var(--white); border: 1px solid var(--line); }
+
+    .output-panel {
+      position: sticky;
+      top: 20px;
+    }
+
+    .output-box {
+      background: var(--white);
+      color: var(--black);
+      border-radius: 20px;
+      padding: 18px;
+      min-height: 390px;
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-size: 14px;
+      overflow: auto;
+      border: 4px solid var(--yellow);
+    }
+
+    .small-note {
+      color: rgba(255,255,255,0.62);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="brand-pill">⚡ Media Madness</div>
+      <h1>Exploratory Design Prompt Generator</h1>
+      <p>Create bold brand activation, trade show, storefront, social media, and surreal promo design prompts inspired by immersive 3D displays, oversized product moments, floating installations, and eye-catching campaign visuals.</p>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="section-title">
+          <h2>Build Your Prompt</h2>
+          <span class="tag">Check all that apply</span>
+        </div>
+
+        <label for="brandName">Brand Name</label>
+        <input id="brandName" placeholder="Type your brand name here" />
+
+        <label for="brandAbout">What is the brand about?</label>
+        <textarea id="brandAbout" placeholder="Example: A luxury digital product brand that teaches entrepreneurs how to build websites and use AI tools."></textarea>
+
+        <label for="customDetails">Custom details to include</label>
+        <textarea id="customDetails" placeholder="Add colors, products, audience, location, theme, text to include, or anything special."></textarea>
+
+        <div class="preset-grid" id="presetGrid"></div>
+      </section>
+
+      <aside class="panel output-panel">
+        <div class="section-title">
+          <h2>Your Generated Prompt</h2>
+          <span class="tag">Ready to copy</span>
+        </div>
+        <div class="output-box" id="output">Fill in your brand details, choose your options, then click Generate Prompt.</div>
+        <div class="button-row">
+          <button class="primary" onclick="generatePrompt()">Generate</button>
+          <button class="secondary" onclick="copyPrompt()">Copy</button>
+          <button class="ghost" onclick="randomizePrompt()">Random</button>
+        </div>
+        <button class="ghost" style="width:100%; margin-top:10px;" onclick="resetForm()">Reset</button>
+        <p class="small-note">Media Madness branding and colors are only used in this generator design. They will not appear in your prompt unless you type them in yourself.</p>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const presets = [
+      { title: "1. Exploratory Design Type", options: ["None", "Brand activation booth", "Trade show display", "Pop-up shop", "Retail storefront concept", "Interactive product island", "Floating product display", "Walkthrough showroom", "Museum-style brand exhibit", "Immersive computer lab", "Luxury office installation", "Outdoor street activation", "Photo-op experience", "Launch event stage", "Mini experiential kiosk", "Digital product demo station", "AR-inspired product zone", "Fashion runway pop-up", "Food truck style display", "Gallery-style brand wall", "Airport-style promo installation"] },
+      { title: "2. Visual Style", options: ["None", "Clean minimal", "High-end luxury", "Futuristic 3D", "Glossy editorial", "Y2K playful", "Urban streetwear", "Soft feminine luxury", "Bold tech startup", "Boutique retail", "Surreal oversized product", "Museum modern", "Industrial chrome", "Premium corporate", "Dreamy pastel", "Neon nightlife", "Luxury mall kiosk", "Magazine campaign", "Toy-like 3D", "Cinematic realistic", "Hyper-realistic commercial"] },
+      { title: "3. Space / Setting", options: ["None", "Trade show floor", "Luxury mall walkway", "City sidewalk", "Outdoor plaza", "Times Square style street", "Modern office lobby", "Computer lab", "Studio showroom", "Retail boutique", "Fashion district", "Airport terminal", "Rooftop event", "Convention center", "Gallery space", "Product launch stage", "Glass display room", "Coffee shop corner", "Beauty bar", "Pop-up market", "Virtual showroom"] },
+      { title: "4. Main Focal Object", options: ["None", "Oversized shopping bag", "Giant product container", "Large 3D logo sculpture", "Floating box display", "Oversized handbag storefront", "Giant coffee cup", "Inflatable product replica", "Luxury kiosk counter", "Curved LED wall", "Glass product case", "Hanging product pods", "Branded archway", "Oversized laptop screen", "3D website mockup wall", "Helicopter delivery concept", "Airplane cargo reveal", "Giant dessert display", "Oversized beauty product", "Interactive vending wall", "Product carousel platform"] },
+      { title: "5. Trade Show Materials", options: ["None", "Step-and-repeat backdrop", "Retractable banner", "Table cover", "Curved booth wall", "LED signage", "Product pedestal", "Brochure rack", "QR code stand", "Floor decals", "Hanging banner", "Branded counter", "Lightbox sign", "Fabric display wall", "Modular booth panels", "Demo table", "VIP seating area", "Name badge station", "Swag display", "Directional signs", "Presentation screen"] },
+      { title: "6. Social Media Graphic Format", options: ["None", "Instagram square campaign", "Instagram story design", "TikTok cover graphic", "YouTube thumbnail concept", "Pinterest pin design", "Facebook banner", "Carousel post concept", "Launch announcement graphic", "Before-and-after promo", "Digital flyer", "Sales page hero visual", "Animated reel scene", "Product reveal graphic", "Mockup collage style", "Bold ad creative", "Event countdown graphic", "Class promo graphic", "Brand teaser image", "Podcast cover visual", "Website header graphic"] },
+      { title: "7. Display Elements", options: ["None", "Spotlights", "Under-glow lighting", "Floating shelves", "Glass rails", "Chrome fixtures", "LED strips", "Product samples", "Touchscreen station", "Seating area", "Round consultation table", "Photo wall", "360 camera area", "Hologram-style screen", "Digital menu board", "Mannequins", "Merch wall", "Demo computers", "Neon signs", "Window display", "Velvet rope entry"] },
+      { title: "8. Materials / Textures", options: ["None", "Glossy acrylic", "Chrome metal", "Matte black panels", "Glass display cases", "Soft inflatable fabric", "Polished concrete", "Light wood flooring", "Brushed aluminum", "Velvet accents", "Mirror finish", "Clear plastic cases", "High-shine laminate", "Luxury leather", "LED translucent panels", "Foam sculptural forms", "Printed fabric", "Carbon fiber", "Pearl white finish", "Candy gloss coating", "Matte pastel finish"] },
+      { title: "9. Mood / Energy", options: ["None", "Luxury", "Fun", "High-energy", "Premium", "Playful", "Bold", "Dreamy", "Futuristic", "Exclusive", "Editorial", "Immersive", "Clean", "Viral", "Unexpected", "Elegant", "Creative", "Techy", "Fashion-forward", "Bright", "Dramatic"] },
+      { title: "10. Camera View", options: ["None", "Wide-angle view", "Straight-on storefront view", "Bird’s-eye trade show view", "Low-angle heroic shot", "Isometric 3D view", "Close-up product detail", "Walking-path perspective", "Cinematic zoom-in view", "Overhead floor plan style", "Three-quarter booth view", "Interior looking outward", "Exterior looking inside", "Street-level view", "Drone-style view", "Lens flare commercial shot", "Deep depth-of-field", "Shallow depth-of-field", "Centered symmetrical view", "Magazine cover angle", "Website hero view"] },
+      { title: "11. Lighting", options: ["None", "Bright studio lighting", "Soft luxury lighting", "Neon glow", "Warm ambient light", "Cool tech lighting", "Spotlight drama", "LED underglow", "Backlit signage", "Natural daylight", "Golden-hour light", "Night city lighting", "High-contrast lighting", "Beauty-dish glow", "Clean showroom lighting", "Colorful uplighting", "Reflective chrome highlights", "Softbox commercial lighting", "Cinematic shadows", "Glowing product edges", "Floating light panels"] },
+      { title: "12. Brand Category", options: ["None", "Digital product brand", "AI education brand", "Website design service", "Fashion brand", "Beauty brand", "Coffee brand", "Bakery brand", "Coaching brand", "Podcast brand", "Fitness brand", "Kids product brand", "Luxury service brand", "Tech startup", "Print shop", "Event planning brand", "Food and beverage brand", "E-commerce brand", "Real estate brand", "Creative agency", "Online course brand"] },
+      { title: "13. Interaction Features", options: ["None", "Clickable display screens", "QR code product journey", "Photo booth moment", "Touchscreen product builder", "Mini game station", "Spin-to-win wheel", "AR try-on zone", "Live demo area", "Walkthrough tunnel", "Product sampling station", "VIP sign-up desk", "Digital quiz station", "Interactive map", "Projection mapping", "Motion-sensor lights", "Selfie mirror", "Sound-reactive lights", "Gamified checkout", "Virtual assistant kiosk", "Before-and-after viewer"] },
+      { title: "14. Composition Rules", options: ["None", "One cohesive scene", "No collage", "No split panels", "Clean focal point", "Balanced spacing", "Clear walking paths", "Realistic scale", "Professional brand presentation", "Readable signage areas", "Strong product hierarchy", "Premium visual order", "Minimal clutter", "Layered foreground and background", "Clear entry point", "Immersive environment", "High detail", "Polished commercial render", "Photorealistic finish", "Unified color palette", "Real-world buildable layout"] },
+      { title: "15. Extra Wow Factor", options: ["None", "Oversized inflatable sculpture", "Floating product pods", "Helicopter delivery moment", "Runway-style entry", "Giant soft prop installation", "Surreal sky display", "Massive street sculpture", "Interactive light tunnel", "Product falling from airplane", "Cloud-shaped displays", "Giant dessert mountain", "Luxury glass box room", "Transparent hanging baskets", "Robot helper station", "Digital billboard takeover", "Moving conveyor display", "Pop-up vending wall", "Huge branded arch", "3D floating website cards", "Animated LED product wall"] },
+      { title: "16. Deliverable Type", options: ["None", "AI image prompt", "3D render concept", "Trade show booth concept", "Social media campaign visual", "Website hero image", "Flyer design concept", "Brand activation blueprint", "Event stage concept", "Retail display design", "Pitch deck visual", "Mockup scene prompt", "Product launch graphic", "Canva design prompt", "Grok motion prompt starter", "Video intro scene", "Storyboard scene", "Print-ready promo concept", "Outdoor advertising concept", "Class demo visual", "Portfolio showcase image"] },
+      { title: "17. Signage / Text Areas", options: ["None", "Large overhead sign", "Side panel signage", "Floor decal text", "Counter front text", "LED screen headline", "Hanging banner text", "Window display text", "Product label space", "QR code callout", "Directional arrows", "Menu board", "Welcome sign", "VIP entry sign", "Mini placards", "Back wall slogan", "Step-and-repeat logos", "Digital screen text areas", "Social handle area", "Event schedule panel", "Call-to-action panel"] },
+      { title: "18. Color Direction", options: ["None", "Use brand colors only", "Black and white with one bold accent", "Bright candy colors", "Soft pastel palette", "Neon color pops", "Chrome with lime accent", "Pink luxury palette", "Yellow and black campaign style", "Blue tech palette", "Orange high-energy palette", "Neutral luxury palette", "Red carpet palette", "Earthy boutique palette", "Purple futuristic palette", "Monochrome premium palette", "Colorful playful palette", "High-contrast palette", "Gold accent palette", "Clean white showroom palette", "Gradient glow palette"] },
+      { title: "19. Output Quality", options: ["None", "Photorealistic", "Ultra-detailed", "Commercial render", "8K quality", "Sharp focus", "Professional lighting", "High contrast", "Premium finish", "Clean edges", "Realistic shadows", "Realistic reflections", "Crisp signage", "Editorial quality", "Studio-grade render", "Viral campaign look", "Polished product mockup", "Modern advertising style", "High-end brand presentation", "Detailed textures", "Clean composition"] },
+      { title: "20. Avoid / Guardrails", options: ["None", "Avoid clutter", "Avoid distorted text", "Avoid blurry signage", "Avoid duplicate logos", "Avoid collage layout", "Avoid split frames", "Avoid messy composition", "Avoid unrealistic proportions", "Avoid low-resolution details", "Avoid random extra words", "Avoid off-brand colors", "Avoid crowded backgrounds", "Avoid warped products", "Avoid unreadable labels", "Avoid cartoonish unless selected", "Avoid cheap-looking materials", "Avoid dark muddy lighting", "Avoid awkward scale", "Avoid overfilled scene", "Avoid generic layout"] }
+    ];
+
+    const grid = document.getElementById('presetGrid');
+
+    function renderPresets() {
+      grid.innerHTML = presets.map((group, groupIndex) => `
+        <div class="preset-card">
+          <h3>${group.title}</h3>
+          <div class="checks">
+            ${group.options.map((option, optionIndex) => `
+              <label class="check-row">
+                <input type="checkbox" name="group-${groupIndex}" value="${option}" ${option === 'None' ? 'data-none="true"' : ''} onchange="handleNone(this, ${groupIndex})" />
+                <span>${option}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleNone(box, groupIndex) {
+      const boxes = document.querySelectorAll(`[name="group-${groupIndex}"]`);
+      if (box.dataset.none === 'true' && box.checked) {
+        boxes.forEach(item => { if (item !== box) item.checked = false; });
+      } else if (box.checked) {
+        boxes.forEach(item => { if (item.dataset.none === 'true') item.checked = false; });
+      }
+    }
+
+    function selectedValues(groupIndex) {
+      return [...document.querySelectorAll(`[name="group-${groupIndex}"]:checked`)]
+        .map(item => item.value)
+        .filter(value => value !== 'None');
+    }
+
+    function generatePrompt() {
+      const brandName = document.getElementById('brandName').value.trim();
+      const brandAbout = document.getElementById('brandAbout').value.trim();
+      const customDetails = document.getElementById('customDetails').value.trim();
+
+      const lines = [];
+      lines.push('Create one cohesive exploratory design concept inspired by immersive 3D brand activations, oversized product displays, trade show booths, luxury storefronts, and eye-catching social media campaign visuals.');
+
+      if (brandName) lines.push(`Brand name: ${brandName}.`);
+      if (brandAbout) lines.push(`Brand description: ${brandAbout}.`);
+      if (customDetails) lines.push(`Custom details to include: ${customDetails}.`);
+
+      presets.forEach((group, index) => {
+        const values = selectedValues(index);
+        if (values.length) {
+          const cleanTitle = group.title.replace(/^\d+\.\s*/, '');
+          lines.push(`${cleanTitle}: ${values.join(', ')}.`);
+        }
+      });
+
+      lines.push('Generate one unified scene, not a collage, not separate thumbnails, and not split panels. Make all selected elements feel naturally integrated into the same environment with realistic scale, clear layout, strong lighting, polished materials, readable signage areas, and a premium commercial presentation.');
+
+      document.getElementById('output').textContent = lines.join('\n\n');
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Prompt copied!');
+      });
+    }
+
+    function randomizePrompt() {
+      resetChecksOnly();
+      presets.forEach((group, groupIndex) => {
+        const options = group.options.filter(option => option !== 'None');
+        const numberToPick = Math.floor(Math.random() * 3) + 1;
+        const shuffled = options.sort(() => 0.5 - Math.random()).slice(0, numberToPick);
+        shuffled.forEach(option => {
+          const box = [...document.querySelectorAll(`[name="group-${groupIndex}"]`)].find(item => item.value === option);
+          if (box) box.checked = true;
+        });
+      });
+      generatePrompt();
+    }
+
+    function resetChecksOnly() {
+      document.querySelectorAll('input[type="checkbox"]').forEach(box => box.checked = false);
+    }
+
+    function resetForm() {
+      document.getElementById('brandName').value = '';
+      document.getElementById('brandAbout').value = '';
+      document.getElementById('customDetails').value = '';
+      resetChecksOnly();
+      document.getElementById('output').textContent = 'Fill in your brand details, choose your options, then click Generate Prompt.';
+    }
+
+    renderPresets();
+  </script>
+</body>
+</html>
